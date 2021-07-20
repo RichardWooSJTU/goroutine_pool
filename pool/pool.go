@@ -2,6 +2,7 @@ package pool
 
 import (
 	"errors"
+	"log"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -83,6 +84,10 @@ func (pool *GoroutinePool) run() {
 	go func() {
 		defer func() {
 			pool.decrement(&pool.runningTasks)
+			r := recover()
+			if r != nil {
+				log.Printf("Worker panic: %s\n",r)
+			}
 		}()
 		for {
 			select {
